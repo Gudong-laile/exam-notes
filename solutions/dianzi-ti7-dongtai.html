@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>题7 动态分析 — 求电压放大倍数 Au</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    })"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; font-family: monospace; white-space: pre; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    strong { font-weight: 600; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 1.5em 0; }
+    .back { font-size: 0.9em; margin-bottom: 1.5em; }
+    .back a { color: #2980b9; text-decoration: none; }
+    ol, ul { padding-left: 1.5em; }
+    li { margin: 0.3em 0; }
+    .warn { color: #c0392b; }
+  </style>
+</head>
+<body>
+  <p class="back"><a href="../index.html">← 返回目录</a></p>
+
+  <h1>题7 动态分析: 求电压放大倍数 $A_u$</h1>
+
+  <h2>一、思路总览</h2>
+  <p>放大电路分析分两步:</p>
+  <ol>
+    <li><strong>静态分析</strong>（你已做完）: 求 $I_{BQ}$、$I_{CQ}$、$U_{CEQ}$，确认晶体管工作在放大区</li>
+    <li><strong>动态分析</strong>（本题）: 画交流通路 → 画微变等效电路 → 列方程求 $A_u$</li>
+  </ol>
+
+  <hr>
+
+  <h2>二、画交流通路（第一步）</h2>
+  <p><strong>画法规则:</strong></p>
+  <ul>
+    <li>电容 $C_1$、$C_2$、$C_E$ → 视为<strong>短路</strong>（对交流信号阻抗为 0）</li>
+    <li>直流电源 $V_{CC}$ → 视为<strong>接地</strong>（内阻为 0，交流地与直流地等电位）</li>
+  </ul>
+  <p><strong>结果:</strong></p>
+  $$R_B \parallel \text{(基极到地)},\quad R_C \parallel R_L \text{ (集电极到地)}$$
+  <p>也就是: 输入端 $u_i \to R_B \to$ 基极 B，集电极 C $\to R_C \parallel R_L \to$ 输出 $u_o$。</p>
+
+  <hr>
+
+  <h2>三、画微变等效电路（第二步）</h2>
+  <p><strong>晶体管小信号模型</strong>（NPN 共射）:</p>
+  $$\text{B} \xrightarrow{r_{be}} \text{E},\quad \text{C} \xrightarrow{\beta i_b} \text{E}$$
+  <p>即: B-E 之间用 $r_{be}$ 等效，C-E 之间是受控电流源 $\beta i_b$。</p>
+  <p><strong>整个电路微变等效图:</strong></p>
+  <pre>
+     B  -[r_be]- E
+u_i -|              |- 地
+     |              |
+     R_B            R_C || R_L  &lt;-- 受控源 βi_b 流过
+                    |
+                    u_o
+  </pre>
+
+  <hr>
+
+  <h2>四、列方程求 $A_u$</h2>
+
+  <h3>Step 1: 求 $r_{be}$（按你教材公式）</h3>
+  $$r_{be} \approx 200 + (1+\beta) \cdot \frac{26}{I_{EQ}}$$
+  <p>注意: $I_{EQ}$ 单位是 <strong>mA</strong>，结果单位是 <strong>Ω</strong>。</p>
+  <p>通常 $I_{EQ} \approx I_{CQ}$（因为 $\beta$ 大），所以代入 $I_{CQ}$ 即可。</p>
+
+  <h3>Step 2: 求输入电压 $u_i$</h3>
+  $$u_i = i_b \cdot r_{be}$$
+  <p>（因为 $R_B$ 在并联回路里，通常 $R_B \gg r_{be}$，$R_B$ 上分流忽略，大部分电流走 $r_{be}$）</p>
+
+  <h3>Step 3: 求输出电压 $u_o$</h3>
+  <p>集电极电流为 $\beta i_b$，流过 $R_C \parallel R_L$:</p>
+  $$u_o = -\beta i_b \cdot (R_C \parallel R_L)$$
+  <p><strong>负号怎么来的:</strong> 受控源 $\beta i_b$ 从 C 流向 E（向下），在 $R_C \parallel R_L$ 上产生的压降使输出端电位<strong>下降</strong>。所以共射放大电路的 $u_o$ 与 $u_i$ <strong>反相</strong>。</p>
+
+  <h3>Step 4: 合并</h3>
+  $$\boxed{A_u = \frac{u_o}{u_i} = -\frac{\beta (R_C \parallel R_L)}{r_{be}}}$$
+
+  <hr>
+
+  <h2>五、并联电阻速算</h2>
+  $$R_C \parallel R_L = \frac{R_C \cdot R_L}{R_C + R_L}$$
+  <p>如果 $R_L$ 开路（没接负载）: $R_C \parallel R_L = R_C$（开路就是无穷大，并联无穷大等于它本身）。</p>
+
+  <hr>
+
+  <h2>六、典型例题模板</h2>
+  <p>假设题目给: $\beta = 50$，$R_B = 300\text{k}\Omega$，$R_C = 3\text{k}\Omega$，$R_L = 3\text{k}\Omega$，静态求出 $I_{CQ} = 1\text{mA}$</p>
+
+  <p><strong>Step 1:</strong></p>
+  $$r_{be} = 200 + (1+50) \cdot \frac{26}{1} = 200 + 1326 = 1526\,\Omega \approx 1.53\text{k}\Omega$$
+
+  <p><strong>Step 2:</strong></p>
+  $$R_C \parallel R_L = \frac{3 \times 3}{3+3} = 1.5\text{k}\Omega$$
+
+  <p><strong>Step 3:</strong></p>
+  $$A_u = -\frac{50 \times 1.5}{1.53} \approx -49$$
+
+  <p>负号表示反相，放大倍数约 49 倍。</p>
+
+  <hr>
+
+  <h2>七、易错点提醒</h2>
+  <ol>
+    <li class="warn"><strong>$r_{be}$ 的 $I_{EQ}$ 用 mA</strong>，不是 A，否则单位错</li>
+    <li class="warn"><strong>负号不能丢</strong> — 共射放大就是反相</li>
+    <li class="warn"><strong>$R_C$ 和 $R_L$ 是并联，不是串联</strong> — 因为 $C_2$ 把它俩从 C 节点都引向地（交流通路）</li>
+    <li><strong>$R_B$ 通常忽略</strong> — 因为它远大于 $r_{be}$，分流很小</li>
+    <li>如果 <strong>$R_L$ 开路</strong>，$R_C \parallel R_L = R_C$，这就是设计题里"最坏情况"的来源</li>
+  </ol>
+
+  <hr>
+
+  <h2>八、和设计题（题8）的关系</h2>
+  <p>题8 给的约束 $\dfrac{\beta R_C}{r_{be}} \leq 10$ 就是从这里来的:</p>
+  $$|A_u|_{R_L \to \infty} = \frac{\beta R_C}{r_{be}} \leq 10$$
+  <p>（即 $R_L$ 开路时电压放大倍数不超过 10）</p>
+</body>
+</html>
