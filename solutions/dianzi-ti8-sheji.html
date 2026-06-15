@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>题8 设计题 完整解析</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    })"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5em 0.8em; text-align: left; }
+    th { background: #f0f4f8; }
+    .boxed { border: 2px solid #2c3e50; padding: 0.4em 0.8em; margin: 0.5em 0; display: inline-block; border-radius: 4px; background: #f9fbfc; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 1.5em 0; }
+    ul { padding-left: 1.5em; }
+    li { margin: 0.3em 0; }
+    strong { color: #2c3e50; }
+    .back-link { font-size: 0.9em; margin-bottom: 1.5em; display: block; }
+    .back-link a { color: #2980b9; text-decoration: none; }
+    .back-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<a class="back-link" href="../index.html">← 返回目录</a>
+
+<h1>题8 设计题 完整解析</h1>
+
+<h2>题目</h2>
+
+<p>在图示的固定偏置放大电路中，$U_{CC} = 10\,\text{V}$，晶体管 $\beta = 15$，$I_C = 2\,\text{mA}$。当负载变化时，要求 $|A_u| \leq 10$，试计算 $R_C$、$R_B$ 及 $U_{CE}$。</p>
+
+<hr>
+
+<h2>一、思路分析</h2>
+
+<p><strong>设计题与分析题的区别:</strong></p>
+<ul>
+  <li>分析题：元件给定，求电路特性（$A_u$，静态点等）</li>
+  <li>设计题：给定要求，反向求元件值</li>
+</ul>
+
+<p><strong>本题已知量:</strong></p>
+<ul>
+  <li>$V_{CC} = 10\,\text{V}$，$\beta = 15$，$I_{CQ} = 2\,\text{mA}$</li>
+  <li>约束：$|A_u| \leq 10$（任何负载情况下都满足）</li>
+</ul>
+
+<p><strong>待求量:</strong> $R_B$，$R_C$，$U_{CEQ}$</p>
+
+<p><strong>关键洞察 — 最坏情况:</strong></p>
+
+<p>电压增益公式：$A_u = -\dfrac{\beta(R_C \parallel R_L)}{r_{be}}$</p>
+
+<p>负载 $R_L$ 越大，$R_C \parallel R_L$ 越大，$|A_u|$ 越大。极限情况是 <strong>$R_L$ 开路</strong>（$R_L \to \infty$），此时 $R_C \parallel R_L = R_C$。</p>
+
+<p>所以"任何负载下 $|A_u| \leq 10$"等价于"$R_L$ 开路时 $|A_u| \leq 10$"：</p>
+
+$$\frac{\beta R_C}{r_{be}} \leq 10$$
+
+<p>这就是约束条件的核心，<strong>记住这个变形</strong>。</p>
+
+<hr>
+
+<h2>二、Step 1: 静态分析求 $R_B$</h2>
+
+<p>固定偏置电路中，基极电流由 $R_B$ 控制：</p>
+
+$$I_{BQ} = \frac{V_{CC} - U_{BEQ}}{R_B}$$
+
+<p>由 $I_{CQ} = \beta I_{BQ}$：</p>
+
+$$I_{BQ} = \frac{I_{CQ}}{\beta} = \frac{2}{15}\,\text{mA} \approx 0.133\,\text{mA}$$
+
+<p>代入求 $R_B$：</p>
+
+$$R_B = \frac{V_{CC} - U_{BEQ}}{I_{BQ}} = \frac{10 - 0.7}{0.133}\,\text{k}\Omega = \frac{9.3}{0.133}\,\text{k}\Omega \approx 69.75\,\text{k}\Omega$$
+
+<p><span class="boxed">$R_B \approx 69.75\,\text{k}\Omega$（取标称值 $70\,\text{k}\Omega$）</span></p>
+
+<hr>
+
+<h2>三、Step 2: 求 $r_{be}$</h2>
+
+<p>按教材公式：</p>
+
+$$r_{be} \approx 200 + (1+\beta)\frac{26}{I_{EQ}}$$
+
+<p>⚠️ <strong>注意单位</strong>：$I_{EQ}$ 用 <strong>mA</strong>，结果是 <strong>Ω</strong>。</p>
+
+<p>由于 $\beta$ 较大，通常 $I_{EQ} \approx I_{CQ} = 2\,\text{mA}$（这里 $\beta=15$ 不太大，严谨点是 $I_{EQ}=(1+\beta)I_{BQ}\approx I_{CQ}\cdot(1+1/\beta)\approx 2.13\,\text{mA}$，误差很小，直接取 $I_{CQ}$ 即可）。</p>
+
+<p>代入：</p>
+
+$$r_{be} = 200 + (1+15) \cdot \frac{26}{2} = 200 + 16 \times 13 = 200 + 208 = 408\,\Omega$$
+
+<p><span class="boxed">$r_{be} \approx 408\,\Omega \approx 0.4\,\text{k}\Omega$</span></p>
+
+<hr>
+
+<h2>四、Step 3: 用约束求 $R_C$</h2>
+
+<p>代入约束：</p>
+
+$$\frac{\beta R_C}{r_{be}} \leq 10$$
+
+$$R_C \leq \frac{10 \cdot r_{be}}{\beta} = \frac{10 \times 408}{15} = 272\,\Omega$$
+
+<p><strong>取等号</strong>（使放大倍数最大，同时不超过约束）：</p>
+
+<p><span class="boxed">$R_C = 272\,\Omega$（取标称值 $270\,\Omega$）</span></p>
+
+<p><strong>校核:</strong></p>
+
+$$|A_u|_{\max} = \frac{\beta R_C}{r_{be}} = \frac{15 \times 272}{408} = 10 \,\checkmark$$
+
+<hr>
+
+<h2>五、Step 4: 求 $U_{CEQ}$</h2>
+
+$$U_{CEQ} = V_{CC} - I_{CQ} R_C = 10 - 2\,\text{mA} \times 272\,\Omega$$
+
+<p>注意单位换算：$2\,\text{mA} \times 272\,\Omega = 0.544\,\text{V}$</p>
+
+$$U_{CEQ} = 10 - 0.544 = 9.456\,\text{V}$$
+
+<p><span class="boxed">$U_{CEQ} \approx 9.46\,\text{V}$</span></p>
+
+<p><strong>判断工作状态:</strong></p>
+<ul>
+  <li>$U_{BEQ} = 0.7\,\text{V}$（B-E 正偏）</li>
+  <li>$U_{CEQ} = 9.46\,\text{V} &gt; 0.7\,\text{V}$（C-B 反偏）</li>
+  <li>✅ <strong>晶体管工作在放大区</strong></li>
+</ul>
+
+<hr>
+
+<h2>六、最终答案汇总</h2>
+
+<table>
+  <thead>
+    <tr><th>参数</th><th>计算值</th><th>取值</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>$R_B$</td><td>$69.75\,\text{k}\Omega$</td><td>$\approx 70\,\text{k}\Omega$</td></tr>
+    <tr><td>$r_{be}$</td><td>$408\,\Omega$</td><td>$\approx 0.4\,\text{k}\Omega$</td></tr>
+    <tr><td>$R_C$</td><td>$\leq 272\,\Omega$</td><td>$272\,\Omega$</td></tr>
+    <tr><td>$U_{CEQ}$</td><td>$9.456\,\text{V}$</td><td>$\approx 9.46\,\text{V}$</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>七、易错点提醒 ⚠️</h2>
+
+<ol>
+  <li><strong>$r_{be}$ 公式里 $I_{EQ}$ 必须用 mA</strong>，不要用 A！（这就是你这道题踩的坑）</li>
+  <li><strong>最坏情况是 $R_L$ 开路</strong>，不要去找一个特定的 $R_L$ 值</li>
+  <li><strong>$R_C$ 取约束取等号</strong>，给最大放大倍数，满足不等式要求</li>
+  <li><strong>单位换算</strong>：$\text{mA} \times \Omega = \text{mV}$，$\text{mA} \times \text{k}\Omega = \text{V}$</li>
+  <li><strong>校核工作区</strong>：$U_{CEQ} &gt; U_{BEQ}$，确认在放大区</li>
+</ol>
+
+<hr>
+
+<h2>八、设计题通用套路总结</h2>
+
+<p>设计放大电路三步走：</p>
+
+<ol>
+  <li><strong>静态分析</strong> → 求 $R_B$<br>
+    公式：$R_B = (V_{CC} - U_{BEQ})/I_{BQ}$，其中 $I_{BQ} = I_{CQ}/\beta$</li>
+  <li><strong>计算 $r_{be}$</strong>（注意单位！）</li>
+  <li><strong>用约束反推</strong> $R_C$<br>
+    常见约束：$|A_u| \leq M$ → $R_C \leq M \cdot r_{be}/\beta$（最坏情况 $R_L$ 开路）</li>
+  <li><strong>校核</strong> $U_{CEQ}$ 在放大区</li>
+</ol>
+
+<p>完事 ❤️</p>
+</body>
+</html>
