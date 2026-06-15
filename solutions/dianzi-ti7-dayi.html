@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>题7 动态分析 三个疑问解答</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    })"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    table { border-collapse: collapse; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 0.4em 0.8em; }
+    th { background: #f0f0f0; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 2em 0; }
+  </style>
+</head>
+<body>
+<h1>题7 动态分析 三个疑问解答</h1>
+
+<p>你那道题做得很标准,我针对你问的三个点解释清楚。</p>
+
+<hr>
+
+<h2>问题1: 集电极和发射极之间那个"奇怪的小菱形"是什么?</h2>
+
+<p>那个菱形符号是<strong>受控电流源</strong> (Controlled Current Source) 的标准电路符号。</p>
+
+<h3>为什么用菱形?</h3>
+
+<p>电路图里有两种"源":</p>
+
+<table>
+  <thead>
+    <tr><th>符号</th><th>含义</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>圆圈 ⭕</td><td>独立源 (Independent source) — 电压/电流由自己决定</td></tr>
+    <tr><td>菱形 ◇</td><td>受控源 (Dependent source) — 电压/电流由别处的物理量控制</td></tr>
+  </tbody>
+</table>
+
+<p>晶体管的核心特性就是: <strong>集电极电流 $i_c$ 由基极电流 $i_b$ 控制</strong>,关系是 $i_c = \beta i_b$。</p>
+
+<p>这不是一个独立的电源,而是"被 $i_b$ 控制"的电流源,所以用菱形画。</p>
+
+<h3>物理意义</h3>
+
+<p>晶体管放大的本质就是: 你在 B-E 之间送一个小电流 $i_b$,在 C-E 之间就会"凭空"出现一个 $\beta$ 倍大的电流 $\beta i_b$。这个被"凭空"产生的大电流就是用菱形受控源表示的。</p>
+
+<p>记忆口诀: <strong>菱形 = 听话的源,看别人脸色干活</strong>。</p>
+
+<hr>
+
+<h2>问题2: 输出电压为什么要加负号?</h2>
+
+<p>这是共射放大电路的<strong>反相特性</strong>,需要从电流方向理解。</p>
+
+<h3>推导过程</h3>
+
+<p>看你的微变等效电路:</p>
+<ul>
+  <li>受控源 $\beta i_b$ 的箭头从 C 指向 E (向下)</li>
+  <li>这意味着: 电流从外电路流入 C 节点的方向是 <strong>C → E 内部 → 地</strong></li>
+  <li>等价地说,外电路上,电流是从地(E)通过 $R_C \parallel R_L$ <strong>流向 C</strong> 的方向</li>
+</ul>
+
+<h3>输出电压 $u_o$ 的定义</h3>
+
+<p>题目里 $u_o$ 是<strong>集电极到地</strong>的电压(C 点高电位,地为参考)。</p>
+
+<p>按 $u_o$ 的参考方向(C 为 + 端,地为 - 端),电流在 $R_C \parallel R_L$ 上的实际流向是<strong>从地流向 C</strong>。</p>
+
+<p>这意味着: 电流方向与 $u_o$ 的参考方向<strong>相反</strong>。</p>
+
+<p>所以:</p>
+
+$$u_o = -\beta i_b \cdot (R_C \parallel R_L)$$
+
+<h3>直观理解</h3>
+
+<p>更直观的物理理解:</p>
+<ul>
+  <li>当 $u_i$ 上升 → $i_b$ 增大 → $i_c$ 增大 (更多电流从 C 流入晶体管)</li>
+  <li>$R_C$ 上的电压降 $i_c \cdot R_C$ 增大</li>
+  <li>因为 $u_C = V_{CC} - i_c R_C$,所以 $u_C$ <strong>下降</strong></li>
+  <li>$u_o$ 取自 C 点,所以 $u_o$ 下降</li>
+</ul>
+
+<p>结论: <strong>$u_i$ 升,$u_o$ 降</strong> → 反相 → 加负号。</p>
+
+<h3>记忆口诀</h3>
+
+<p>共射放大有"两负":</p>
+<ol>
+  <li><strong>电流方向</strong>与 $u_o$ 参考方向相反</li>
+  <li><strong>波形</strong>反相 (输入升 = 输出降)</li>
+</ol>
+
+<p>这两个"负"是同一件事的两种表述。</p>
+
+<hr>
+
+<h2>问题3: $r_{be}$ 极小、$r_{ce}$ 极大,为什么?</h2>
+
+<p>你的直觉<strong>完全正确</strong>! 这正是分析时为什么把 $r_{ce}$ 忽略掉、只算 $r_{be}$ 的原因。</p>
+
+<h3>$r_{be}$ 为什么小?</h3>
+
+<p>$r_{be}$ 是 B-E 结的<strong>正向偏置</strong>等效电阻。</p>
+<ul>
+  <li>在放大区,B-E 结是<strong>正偏的 PN 结</strong></li>
+  <li>PN 结正偏时导通良好,电阻很小</li>
+  <li>按你教材公式: $r_{be} \approx 200 + (1+\beta)\dfrac{26}{I_{EQ}}$</li>
+  <li>典型值: 当 $\beta=50$,$I_{EQ}=1\text{mA}$ 时,$r_{be} \approx 1.5\text{k}\Omega$,<strong>千欧级</strong></li>
+</ul>
+
+<h3>$r_{ce}$ 为什么大?</h3>
+
+<p>$r_{ce}$ 是 C-E 之间的<strong>输出电阻</strong> (从 C 看进去的等效电阻)。</p>
+<ul>
+  <li>在放大区,C-B 结是<strong>反向偏置的 PN 结</strong></li>
+  <li>PN 结反偏时几乎不导电,电阻极大</li>
+  <li>典型值: $r_{ce}$ 在 <strong>几十千欧 ~ 几百千欧</strong> 量级</li>
+  <li>远大于 $R_C$ (通常 $R_C$ 是 1-10 kΩ)</li>
+</ul>
+
+<h3>为什么微变等效电路里没画 $r_{ce}$?</h3>
+
+<p>因为 $r_{ce}$ 是和 $R_C$ <strong>并联</strong>的,而且 $r_{ce} \gg R_C$:</p>
+
+$$r_{ce} \parallel R_C \approx R_C$$
+
+<p>(大数和小数并联,结果≈小数)</p>
+
+<p>所以<strong>忽略 $r_{ce}$ 几乎不影响结果</strong>,简化分析时直接当不存在。</p>
+
+<h3>总结表</h3>
+
+<table>
+  <thead>
+    <tr><th>参数</th><th>大小</th><th>物理原因</th><th>是否要算</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>$r_{be}$</td><td>小 (kΩ)</td><td>B-E 正偏 PN 结</td><td><strong>必算</strong></td></tr>
+    <tr><td>$r_{ce}$</td><td>大 (几十~几百 kΩ)</td><td>C-B 反偏 PN 结</td><td>通常忽略</td></tr>
+  </tbody>
+</table>
+
+<h3>三极管三个 PN 结状态的对应关系</h3>
+
+<p>回顾你笔记里抄的三种工作状态:</p>
+<ul>
+  <li><strong>截止</strong>: $u_{BE}&lt;0.5\text{V}$,B-E 反偏 → $r_{be} = \infty$ (不导通)</li>
+  <li><strong>放大</strong>: $u_{BE}\approx 0.7\text{V}$ 且 $u_{CE}&gt;0.7\text{V}$,B-E 正偏 + B-C 反偏 → $r_{be}$ 小,$r_{ce}$ 大 ← <strong>就是动态分析的工作区</strong></li>
+  <li><strong>饱和</strong>: $u_{BE}\approx 0.7\text{V}$ 且 $u_{CE}\leq 0.3\text{V}$,两个结都正偏 → 两个电阻都小,失去放大能力</li>
+</ul>
+
+<hr>
+
+<h2>一句话总结</h2>
+<ul>
+  <li><strong>菱形</strong> = 受控源,代表晶体管"小电流控大电流"的本质</li>
+  <li><strong>负号</strong> = 共射反相,因为电流方向与 $u_o$ 参考方向相反 / 物理上输入升输出降</li>
+  <li><strong>$r_{be}$ 小 / $r_{ce}$ 大</strong> = B-E 正偏 / C-B 反偏的 PN 结特性,所以分析时只算 $r_{be}$</li>
+</ul>
+</body>
+</html>
