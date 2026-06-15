@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -55,7 +55,7 @@
 
 <hr>
 
-<h2>二、左图分析 (D 阳极朝左)</h2>
+<h2>二、右图分析 (D 阳极朝左)</h2>
 
 <h3>电路拓扑</h3>
 
@@ -102,17 +102,17 @@
  0 ─┼──────────────────────── t
    │</code></pre>
 
-<p><strong>口诀</strong>: 左图是 <strong>"低端削平在 +E"</strong> (3V 以下全削掉, 替换成 3V).</p>
+<p><strong>口诀</strong>: 右图是 <strong>"低端削平在 +E"</strong> (3V 以下全削掉, 替换成 3V).</p>
 
 <hr>
 
-<h2>三、右图分析 (D 阳极朝右, 即反向)</h2>
+<h2>三、左图分析 (D 阳极朝右, 即反向)</h2>
 
 <h3>电路拓扑</h3>
 
 <p>$$u_i \xrightarrow{D(\text{阴左阳右})} \text{输出节点} \xrightarrow{R,E\text{(串联)}} \text{地}$$</p>
 
-<p>E 极性同左图: 正极朝上, 负极朝下.</p>
+<p>E 极性同右图: 正极朝上, 负极朝下.</p>
 
 <h3>Step 1: 找 D 的导通/截止临界点</h3>
 
@@ -148,7 +148,7 @@
    │             ╲ ╱
 -6 │              V              ← u_i 负半周原样</code></pre>
 
-<p><strong>口诀</strong>: 右图是 <strong>"高端削平在 +E"</strong> (3V 以上全削掉, 替换成 3V).</p>
+<p><strong>口诀</strong>: 左图是 <strong>"高端削平在 +E"</strong> (3V 以上全削掉, 替换成 3V).</p>
 
 <hr>
 
@@ -159,8 +159,8 @@
     <tr><th>电路</th><th>D 方向</th><th>输出特性</th><th>哪部分被削</th></tr>
   </thead>
   <tbody>
-    <tr><td>左图</td><td>阳极朝输入</td><td>$u_o = \max(u_i, E)$</td><td>削低端 (低于 E 削成 E)</td></tr>
-    <tr><td>右图</td><td>阳极朝输出</td><td>$u_o = \min(u_i, E)$</td><td>削高端 (高于 E 削成 E)</td></tr>
+    <tr><td>右图</td><td>阳极朝输入</td><td>$u_o = \max(u_i, E)$</td><td>削低端 (低于 E 削成 E)</td></tr>
+    <tr><td>左图</td><td>阳极朝输出</td><td>$u_o = \min(u_i, E)$</td><td>削高端 (高于 E 削成 E)</td></tr>
   </tbody>
 </table>
 
@@ -194,7 +194,7 @@
 
 <h3>错误4: 画错削掉的方向</h3>
 
-<p>记住口诀: <strong>左图削低, 右图削高</strong> (默认 E 正极朝上的情况下).</p>
+<p>记住口诀: <strong>右图削低, 左图削高</strong> (默认 E 正极朝上的情况下).</p>
 
 <p>如果 E 极性反过来 (正极朝下), 则结论也反过来 — 题目里要看清 E 的方向.</p>
 
@@ -205,8 +205,8 @@
 <p>如果题目里 E 的"+"在下方 (向地), 那么 D 截止时 $u_o = -E = -3\,\text{V}$. 此时:</p>
 
 <ul>
-  <li>左图: $u_o = \max(u_i, -3)$ — 削平线变成 -3V</li>
-  <li>右图: $u_o = \min(u_i, -3)$ — 削平线变成 -3V</li>
+  <li>右图: $u_o = \max(u_i, -3)$ — 削平线变成 -3V</li>
+  <li>左图: $u_o = \min(u_i, -3)$ — 削平线变成 -3V</li>
 </ul>
 
 <p>考试看清 E 的极性最重要.</p>
@@ -217,8 +217,8 @@
 
 <blockquote>
 <p><strong>答</strong>:</p>
-<p>(1) 左图: 当 $u_i &gt; E = 3V$ 时, D 导通, $u_o = u_i$; 当 $u_i \leq 3V$ 时, D 截止, $u_o = E = 3V$. 输出波形为正弦波顶部(&gt;3V部分)原样, 其余削平在 3V.</p>
-<p>(2) 右图: 当 $u_i &lt; E = 3V$ 时, D 导通, $u_o = u_i$; 当 $u_i \geq 3V$ 时, D 截止, $u_o = E = 3V$. 输出波形为正弦波底部(&lt;3V部分)原样, 其余削平在 3V.</p>
+<p>(1) 右图: 当 $u_i &gt; E = 3V$ 时, D 导通, $u_o = u_i$; 当 $u_i \leq 3V$ 时, D 截止, $u_o = E = 3V$. 输出波形为正弦波顶部(&gt;3V部分)原样, 其余削平在 3V.</p>
+<p>(2) 左图: 当 $u_i &lt; E = 3V$ 时, D 导通, $u_o = u_i$; 当 $u_i \geq 3V$ 时, D 截止, $u_o = E = 3V$. 输出波形为正弦波底部(&lt;3V部分)原样, 其余削平在 3V.</p>
 </blockquote>
 
 <p>记忆神器: <strong>看 D 阳极指向 → 那一侧的电位"被看到", 另一侧"被 E 拉平"</strong> 😉</p>
