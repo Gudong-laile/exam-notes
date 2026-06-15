@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>题9 矩形脉冲输入的二极管限幅电路</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    })"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5em 0.8em; text-align: left; }
+    th { background: #f0f0f0; }
+    blockquote { border-left: 4px solid #ccc; margin: 1em 0; padding: 0.5em 1em; color: #555; background: #fafafa; }
+  </style>
+</head>
+<body>
+<h1>题9: 矩形脉冲输入的二极管限幅电路</h1>
+
+<blockquote>
+<p>输入: 矩形脉冲序列 (3V, 7V, 10V, -2V), $E=5\text{V}$, 忽略二极管正向压降. 求输出波形.</p>
+</blockquote>
+
+<h2>一、电路分析</h2>
+
+<h3>拓扑</h3>
+<ul>
+  <li>D: 阳极在输入端, 阴极在输出节点 (D 指向右)</li>
+  <li>$R$ 和 $E=5\text{V}$ 串联接到输出节点和地之间, $E$ 的正极朝上</li>
+  <li>$u_o$ 是输出节点对地电压</li>
+</ul>
+
+<h3>跟题8的关系</h3>
+<p><strong>完全一样的电路</strong>, 只是:</p>
+<ul>
+  <li>输入从正弦波 → 矩形脉冲</li>
+  <li>$E$ 从 3V → 5V</li>
+</ul>
+
+<p>所以结论也一样: $u_o = \max(u_i, E) = \max(u_i, 5\text{V})$</p>
+
+<hr>
+
+<h2>二、判断 D 状态</h2>
+
+<p><strong>设 D 截止</strong>: 无电流, $u_R = 0$, $u_o = E = 5\text{V}$</p>
+
+$$V_{\text{阳}} = u_i, \quad V_{\text{阴}} = u_o = 5\text{V}$$
+
+<p>D 导通条件: $V_{\text{阳}} > V_{\text{阴}}$, 即:</p>
+
+$$\boxed{u_i > 5\text{V}}$$
+
+<hr>
+
+<h2>三、分段计算每个脉冲</h2>
+
+<p>按输入序列逐个分析:</p>
+
+<table>
+  <thead>
+    <tr><th>输入 $u_i$</th><th>判断</th><th>D 状态</th><th>输出 $u_o$</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>3 V</td><td>3 &lt; 5</td><td><strong>截止</strong></td><td><strong>5 V</strong> (被 E 拉到 5V)</td></tr>
+    <tr><td>7 V</td><td>7 &gt; 5</td><td><strong>导通</strong></td><td><strong>7 V</strong> (D 短路, 跟随输入)</td></tr>
+    <tr><td>10 V</td><td>10 &gt; 5</td><td><strong>导通</strong></td><td><strong>10 V</strong> (D 短路, 跟随输入)</td></tr>
+    <tr><td>-2 V</td><td>-2 &lt; 5</td><td><strong>截止</strong></td><td><strong>5 V</strong> (被 E 拉到 5V)</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>四、输出波形</h2>
+
+<pre><code>u_o (V)
+ 10│            ┌───┐                    ← 10V 脉冲原样
+   │            │   │
+  7│      ┌───┐ │   │                    ← 7V 脉冲原样
+   │      │   │ │   │
+  5│──────┘   └─┘   └────────────────    ← 5V 削平线(D 截止时)
+   │
+  3│                                      ← 输入 3V 位置 → 输出 5V (削掉了 3V 那段)
+   │
+  0└──────────────────────────────── t
+   │
+ -2│                                      ← 输入 -2V 位置 → 输出 5V (削掉了 -2V 那段)</code></pre>
+
+<p><strong>关键变化</strong> (跟输入对比):</p>
+<ul>
+  <li>输入 3V 的位置 → 输出变成 <strong>5V</strong></li>
+  <li>输入 -2V 的位置 → 输出变成 <strong>5V</strong></li>
+  <li>输入 7V → 输出 7V (原样)</li>
+  <li>输入 10V → 输出 10V (原样)</li>
+</ul>
+
+<p>输出序列: <strong>5V → 7V → 10V → 5V</strong></p>
+
+<hr>
+
+<h2>五、易错点 ⚠️</h2>
+
+<h3>错误1: 忘记考虑 E 的存在</h3>
+<p>很多人看到"忽略正向压降"就以为 $u_o = u_i$ 永远成立. 错! E 才是关键的"地板", D 截止时 $u_o = E$, 不是 0.</p>
+
+<h3>错误2: 负输入直接当 0 算</h3>
+<p>输入 -2V 时, 输出<strong>不是 0V</strong>, 是 5V (因为 D 截止, E 把输出拉到 5V).</p>
+
+<h3>错误3: 把脉冲宽度搞乱</h3>
+<p>矩形脉冲是离散的, 每段都要单独判断 D 状态, 不要拿正弦波的连续逻辑套.</p>
+
+<h3>错误4: 忘记"忽略正向压降"的意思</h3>
+<p>"忽略正向压降" = 假设 D 导通时压降为 0, 即理想二极管. <strong>不忽略</strong>的话, D 导通时 $u_o = u_i - 0.7\text{V}$, 所有导通段全部下移 0.7V.</p>
+
+<hr>
+
+<h2>六、对比题8 (一句话总结)</h2>
+
+<table>
+  <thead>
+    <tr><th>题号</th><th>输入</th><th>E</th><th>公式</th><th>削平作用</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>题8右图</td><td>6sin(ωt)</td><td>3V</td><td>$\max(u_i, 3)$</td><td>削低端在 3V</td></tr>
+    <tr><td>题9</td><td>矩形脉冲</td><td>5V</td><td>$\max(u_i, 5)$</td><td>削低端在 5V</td></tr>
+  </tbody>
+</table>
+
+<p><strong>完全一致的物理过程</strong>, 只是输入波形和削平线位置不同.</p>
+
+<hr>
+
+<h2>七、考试答题模板</h2>
+
+<blockquote>
+<p><strong>答</strong>:</p>
+<p>设 D 截止, 则 $u_o = E = 5\text{V}$. D 导通条件为 $u_i > 5\text{V}$.</p>
+<p>逐段分析:</p>
+<ul>
+  <li>$u_i = 3\text{V}$: $3 &lt; 5$, D 截止, $u_o = 5\text{V}$</li>
+  <li>$u_i = 7\text{V}$: $7 &gt; 5$, D 导通, $u_o = 7\text{V}$</li>
+  <li>$u_i = 10\text{V}$: $10 &gt; 5$, D 导通, $u_o = 10\text{V}$</li>
+  <li>$u_i = -2\text{V}$: $-2 &lt; 5$, D 截止, $u_o = 5\text{V}$</li>
+</ul>
+<p>输出波形为: 所有低于 5V 的输入被削平在 5V, 高于 5V 的输入原样输出.</p>
+<p>输出序列: <strong>5V → 7V → 10V → 5V</strong></p>
+</blockquote>
+
+<hr>
+
+<p>模电完结撒花 🎉</p>
+</body>
+</html>
