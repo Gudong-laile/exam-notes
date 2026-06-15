@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>题8(数电) 带偏置的二极管限幅电路</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    })"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+    pre code { background: none; padding: 0; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    blockquote { border-left: 4px solid #ddd; margin: 1em 0; padding: 0.5em 1em; color: #555; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5em 0.8em; text-align: left; }
+    th { background: #f0f0f0; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 2em 0; }
+  </style>
+</head>
+<body>
+<h1>题8(数电): 带偏置的二极管限幅电路</h1>
+
+<blockquote>
+<p>题号重复的那道. 输入 $u_i = 6\sin(\omega t)\,\text{V}$, 偏置 $E = 3\,\text{V}$, 画出两种电路的 $u_o$ 波形.</p>
+</blockquote>
+
+<hr>
+
+<h2>一、判题三步走 (通用方法)</h2>
+
+<p>任何二极管电路的波形分析, 都按这三步:</p>
+
+<ol>
+  <li><strong>判断 D 何时导通, 何时截止</strong>
+    <ul>
+      <li>设 D 截止, 看其两端电压, 若<strong>阳极 &gt; 阴极</strong>, 实际应该导通(假设错了, 翻转)</li>
+      <li>设 D 导通(短路), 看流过电流, 若<strong>方向跟 D 允许方向相反</strong>, 实际应该截止(假设错了, 翻转)</li>
+    </ul>
+  </li>
+  <li><strong>导通时: 把 D 短路(理想)</strong>, 求 $u_o$</li>
+  <li><strong>截止时: 把 D 断开</strong>, 求 $u_o$</li>
+</ol>
+
+<hr>
+
+<h2>二、左图分析 (D 阳极朝左)</h2>
+
+<h3>电路拓扑</h3>
+
+<p>$$u_i \xrightarrow{D(\text{阳左阴右})} \text{输出节点} \xrightarrow{R,E\text{(串联)}} \text{地}$$</p>
+
+<p>E 的正极朝上 (向输出节点), 负极朝下 (向地). $u_o$ 是输出节点对地电压.</p>
+
+<h3>Step 1: 找 D 的导通/截止临界点</h3>
+
+<p><strong>设 D 截止</strong>, 此时无电流流过 R, $u_o = E = 3\,\text{V}$ (输出节点电位 = 电池正极电位).</p>
+
+<p>D 的阳极电位 = $u_i$, 阴极电位 = $u_o = 3\,\text{V}$.</p>
+
+<p>D 导通条件: 阳极 &gt; 阴极, 即 $u_i &gt; 3\,\text{V}$.</p>
+
+<h3>Step 2: 分段写表达式</h3>
+
+<p><strong>情况 A</strong>: 当 $u_i &gt; 3\,\text{V}$ → D <strong>导通</strong>, 把 $u_i$ 端和输出节点直接连通</p>
+
+<p>$$u_o = u_i$$</p>
+
+<p><strong>情况 B</strong>: 当 $u_i \leq 3\,\text{V}$ → D <strong>截止</strong>, 无电流, $u_o$ 被 E 拉住</p>
+
+<p>$$u_o = 3\,\text{V}$$</p>
+
+<h3>Step 3: 写最终输出</h3>
+
+<p>$$\boxed{u_o = \max(u_i, 3\,\text{V})}$$</p>
+
+<h3>Step 4: 画波形</h3>
+
+<p>输入 $u_i$ 在 $\pm 6\,\text{V}$ 间摆动. 输出:</p>
+
+<ul>
+  <li>$u_i$ 大于 3V 的部分: 原样跟随 (3V 到 6V 的"小山头")</li>
+  <li>$u_i$ 小于 3V 的部分: <strong>削平</strong>在 3V</li>
+</ul>
+
+<pre><code>u_o (V)
+ 6 │     ╱╲           ╱╲       ← u_i 顶端原样
+   │    ╱  ╲         ╱  ╲
+ 3 │━━━╱    ╲━━━━━━━╱    ╲━━━  ← 3V 削平线
+   │
+ 0 ─┼──────────────────────── t
+   │</code></pre>
+
+<p><strong>口诀</strong>: 左图是 <strong>"低端削平在 +E"</strong> (3V 以下全削掉, 替换成 3V).</p>
+
+<hr>
+
+<h2>三、右图分析 (D 阳极朝右, 即反向)</h2>
+
+<h3>电路拓扑</h3>
+
+<p>$$u_i \xrightarrow{D(\text{阴左阳右})} \text{输出节点} \xrightarrow{R,E\text{(串联)}} \text{地}$$</p>
+
+<p>E 极性同左图: 正极朝上, 负极朝下.</p>
+
+<h3>Step 1: 找 D 的导通/截止临界点</h3>
+
+<p><strong>设 D 截止</strong>, $u_o = E = 3\,\text{V}$.</p>
+
+<p>D 的阳极电位 = $u_o = 3\,\text{V}$, 阴极电位 = $u_i$.</p>
+
+<p>D 导通条件: 阳极 &gt; 阴极, 即 $3 &gt; u_i$, 即 $u_i &lt; 3\,\text{V}$.</p>
+
+<h3>Step 2: 分段写表达式</h3>
+
+<p><strong>情况 A</strong>: 当 $u_i &lt; 3\,\text{V}$ → D <strong>导通</strong>, $u_i$ 端和输出节点连通</p>
+
+<p>$$u_o = u_i$$</p>
+
+<p><strong>情况 B</strong>: 当 $u_i \geq 3\,\text{V}$ → D <strong>截止</strong>, $u_o = 3\,\text{V}$</p>
+
+<h3>Step 3: 写最终输出</h3>
+
+<p>$$\boxed{u_o = \min(u_i, 3\,\text{V})}$$</p>
+
+<h3>Step 4: 画波形</h3>
+
+<ul>
+  <li>$u_i$ 小于 3V 的部分: 原样跟随 (包括负半周完整保留)</li>
+  <li>$u_i$ 大于 3V 的部分: <strong>削平</strong>在 3V</li>
+</ul>
+
+<pre><code>u_o (V)
+ 3 │━━━━╱    ╲━━━━━━━╱    ╲━━  ← 3V 削平线 (顶端)
+   │   ╱      ╲     ╱      ╲
+ 0 ─┼─╱        ╲───╱        ╲── t
+   │             ╲ ╱
+-6 │              V              ← u_i 负半周原样</code></pre>
+
+<p><strong>口诀</strong>: 右图是 <strong>"高端削平在 +E"</strong> (3V 以上全削掉, 替换成 3V).</p>
+
+<hr>
+
+<h2>四、两图对比 (一句话总结)</h2>
+
+<table>
+  <thead>
+    <tr><th>电路</th><th>D 方向</th><th>输出特性</th><th>哪部分被削</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>左图</td><td>阳极朝输入</td><td>$u_o = \max(u_i, E)$</td><td>削低端 (低于 E 削成 E)</td></tr>
+    <tr><td>右图</td><td>阳极朝输出</td><td>$u_o = \min(u_i, E)$</td><td>削高端 (高于 E 削成 E)</td></tr>
+  </tbody>
+</table>
+
+<p><strong>通用规律</strong>:</p>
+<blockquote>
+<p><strong>D 阳极朝哪边, 哪边的电位"高位"被输出"看到"; 另一端被 E "拉平"在 E.</strong></p>
+</blockquote>
+
+<p>或者更直观的记忆:</p>
+<blockquote>
+<p><strong>二极管的方向决定它"放过"哪一段, E 决定削平的高度.</strong></p>
+</blockquote>
+
+<hr>
+
+<h2>五、易错点 ⚠️</h2>
+
+<h3>错误1: 把 D 的截止/导通判断反</h3>
+
+<p>很多人看到"6V &gt; 3V"就直接说 D 导通, 但要看具体的<strong>阳极 vs 阴极</strong>电位.</p>
+
+<p><strong>安全做法</strong>: 假设 D 截止 → 算节点电位 → 比较阳阴 → 一致就 OK, 不一致就反过来.</p>
+
+<h3>错误2: 忘记 E 在 D 截止时的作用</h3>
+
+<p>D 截止时 $u_o$ <strong>不是 0</strong>, 也不是 $u_i$, 而是 <strong>$E$</strong>(电池单独作用, R 上无电流即无压降).</p>
+
+<h3>错误3: 把削平线画错位置</h3>
+
+<p>削平线就是 $E$ 的值, 不是 $\pm E/2$ 也不是 $u_i$ 的均值.</p>
+
+<h3>错误4: 画错削掉的方向</h3>
+
+<p>记住口诀: <strong>左图削低, 右图削高</strong> (默认 E 正极朝上的情况下).</p>
+
+<p>如果 E 极性反过来 (正极朝下), 则结论也反过来 — 题目里要看清 E 的方向.</p>
+
+<hr>
+
+<h2>六、扩展: E 极性反过来的情况</h2>
+
+<p>如果题目里 E 的"+"在下方 (向地), 那么 D 截止时 $u_o = -E = -3\,\text{V}$. 此时:</p>
+
+<ul>
+  <li>左图: $u_o = \max(u_i, -3)$ — 削平线变成 -3V</li>
+  <li>右图: $u_o = \min(u_i, -3)$ — 削平线变成 -3V</li>
+</ul>
+
+<p>考试看清 E 的极性最重要.</p>
+
+<hr>
+
+<h2>七、考试模板 (照抄就行)</h2>
+
+<blockquote>
+<p><strong>答</strong>:</p>
+<p>(1) 左图: 当 $u_i &gt; E = 3V$ 时, D 导通, $u_o = u_i$; 当 $u_i \leq 3V$ 时, D 截止, $u_o = E = 3V$. 输出波形为正弦波顶部(&gt;3V部分)原样, 其余削平在 3V.</p>
+<p>(2) 右图: 当 $u_i &lt; E = 3V$ 时, D 导通, $u_o = u_i$; 当 $u_i \geq 3V$ 时, D 截止, $u_o = E = 3V$. 输出波形为正弦波底部(&lt;3V部分)原样, 其余削平在 3V.</p>
+</blockquote>
+
+<p>记忆神器: <strong>看 D 阳极指向 → 那一侧的电位"被看到", 另一侧"被 E 拉平"</strong> 😉</p>
+</body>
+</html>
