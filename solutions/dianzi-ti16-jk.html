@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>题16 JK 触发器的四种工作状态</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    })"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5em 1em; text-align: left; }
+    th { background: #f0f0f0; }
+    blockquote { border-left: 4px solid #ccc; margin: 1em 0; padding: 0.5em 1em; color: #555; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 2em 0; }
+  </style>
+</head>
+<body>
+<h1>题16: JK 触发器的四种工作状态</h1>
+
+<h2>一、JK 触发器是什么?</h2>
+
+<p>JK 触发器(JK Flip-Flop) 是数字电路里最常用的双稳态触发器之一. 有两个<strong>控制输入</strong> $J$ 和 $K$, 一个<strong>时钟输入</strong> $CP$, 两个<strong>互补输出</strong> $Q$ 和 $\overline{Q}$.</p>
+
+<p>它的特点: <strong>没有非法状态</strong> — 不管 $J$、$K$ 怎么组合, 输出都有明确定义. 这是它比 RS 触发器(有"约束态")更好用的原因.</p>
+
+<hr>
+
+<h2>二、四种工作状态 (核心)</h2>
+
+<p>JK 触发器的输出由 $J$、$K$ 的四种组合决定. 设当前状态为 $Q^n$ (next state 为 $Q^{n+1}$):</p>
+
+<h3>状态 1: $J=0, K=0$ → <strong>保持</strong> (Hold)</h3>
+
+$$Q^{n+1} = Q^n$$
+
+<ul>
+  <li>物理意义: 不管时钟来不来, 输出<strong>保持不变</strong></li>
+  <li>用途: 锁住当前数据</li>
+</ul>
+
+<h3>状态 2: $J=0, K=1$ → <strong>置 0</strong> (Reset)</h3>
+
+$$Q^{n+1} = 0$$
+
+<ul>
+  <li>物理意义: 时钟来了, $Q$ 强制变成 0</li>
+  <li>用途: 清零</li>
+</ul>
+
+<h3>状态 3: $J=1, K=0$ → <strong>置 1</strong> (Set)</h3>
+
+$$Q^{n+1} = 1$$
+
+<ul>
+  <li>物理意义: 时钟来了, $Q$ 强制变成 1</li>
+  <li>用途: 置位</li>
+</ul>
+
+<h3>状态 4: $J=1, K=1$ → <strong>翻转</strong> (Toggle)</h3>
+
+$$Q^{n+1} = \overline{Q^n}$$
+
+<ul>
+  <li>物理意义: 时钟来了, $Q$ <strong>翻转</strong>(0 变 1, 1 变 0)</li>
+  <li>用途: 二分频、计数</li>
+</ul>
+
+<hr>
+
+<h2>三、特性方程 (一行总结)</h2>
+
+<p>把四种状态合写成一个布尔表达式 — <strong>JK 触发器的特性方程</strong>:</p>
+
+$$\boxed{Q^{n+1} = J \cdot \overline{Q^n} + \overline{K} \cdot Q^n}$$
+
+<p>可以代入四种情况验证:</p>
+
+<table>
+  <thead>
+    <tr><th>$J$</th><th>$K$</th><th>代入特性方程</th><th>化简</th><th>状态名</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>0</td><td>0</td><td>$0 \cdot \overline{Q^n} + 1 \cdot Q^n$</td><td>$Q^n$</td><td>保持</td></tr>
+    <tr><td>0</td><td>1</td><td>$0 \cdot \overline{Q^n} + 0 \cdot Q^n$</td><td>$0$</td><td>置 0</td></tr>
+    <tr><td>1</td><td>0</td><td>$1 \cdot \overline{Q^n} + 1 \cdot Q^n$</td><td>$1$</td><td>置 1</td></tr>
+    <tr><td>1</td><td>1</td><td>$1 \cdot \overline{Q^n} + 0 \cdot Q^n$</td><td>$\overline{Q^n}$</td><td>翻转</td></tr>
+  </tbody>
+</table>
+
+<p>记忆神器: 特性方程<strong>记住一个</strong>, 四种状态自动推出来.</p>
+
+<hr>
+
+<h2>四、状态转换表 (Truth Table)</h2>
+
+<table>
+  <thead>
+    <tr><th>$J$</th><th>$K$</th><th>$CP$ 上升沿后 $Q^{n+1}$</th><th>状态名</th><th>中文记忆</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>0</td><td>0</td><td>$Q^n$</td><td>Hold</td><td><strong>保持</strong></td></tr>
+    <tr><td>0</td><td>1</td><td>0</td><td>Reset</td><td><strong>清零</strong></td></tr>
+    <tr><td>1</td><td>0</td><td>1</td><td>Set</td><td><strong>置一</strong></td></tr>
+    <tr><td>1</td><td>1</td><td>$\overline{Q^n}$</td><td>Toggle</td><td><strong>翻转</strong></td></tr>
+  </tbody>
+</table>
+
+<h3>记忆口诀</h3>
+
+<blockquote>
+  <strong>零零保持, 零一清零, 一零置一, 一一翻转</strong>
+</blockquote>
+
+<p>或者更口语化:</p>
+<blockquote>
+  <strong>K 是 1 → 偏向 0; J 是 1 → 偏向 1; 两个都 1 → 翻; 都 0 → 不动</strong>
+</blockquote>
+
+<hr>
+
+<h2>五、关键概念辨析</h2>
+
+<h3>CP 边沿的重要性</h3>
+
+<p>JK 触发器的输出<strong>只在时钟 CP 的有效边沿</strong>才更新(通常是上升沿↑或下降沿↓, 看具体型号). CP 没有边沿时, 不管 J、K 怎么变, 输出都不变.</p>
+
+<h3>跟 RS、D、T 触发器的对比</h3>
+
+<table>
+  <thead>
+    <tr><th>类型</th><th>输入数</th><th>特性方程</th><th>有无非法态</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>RS</td><td>2 (R, S)</td><td>$Q^{n+1} = S + \overline{R}Q^n$, R·S=0 约束</td><td><strong>有</strong> (R=S=1)</td></tr>
+    <tr><td><strong>JK</strong></td><td><strong>2 (J, K)</strong></td><td>$Q^{n+1} = J\overline{Q^n} + \overline{K}Q^n$</td><td><strong>无</strong></td></tr>
+    <tr><td>D</td><td>1 (D)</td><td>$Q^{n+1} = D$</td><td>无</td></tr>
+    <tr><td>T</td><td>1 (T)</td><td>$Q^{n+1} = T \oplus Q^n$</td><td>无</td></tr>
+  </tbody>
+</table>
+
+<p><strong>JK 触发器最大的优势</strong>: $J=K=1$ 不是非法态, 而是有用的"翻转态" — 这就是计数器的核心.</p>
+
+<h3>JK 和 T 的关系</h3>
+
+<p>当 $J = K = T$ 时, JK 退化成 T 触发器:</p>
+<ul>
+  <li>$T=0$: 保持(对应 J=K=0)</li>
+  <li>$T=1$: 翻转(对应 J=K=1)</li>
+</ul>
+
+<p>所以 JK 触发器可以<strong>当成 T 触发器用</strong>, 把两个输入短接就行.</p>
+
+<hr>
+
+<h2>六、典型应用举例</h2>
+
+<h3>应用1: 二分频电路 (J=K=1)</h3>
+
+<p>把 $J$ 和 $K$ 都接高电平(1), 输入时钟 $CP$:</p>
+<ul>
+  <li>每来一个 CP 上升沿, $Q$ 翻转一次</li>
+  <li>输出频率 = 输入频率 / 2</li>
+</ul>
+
+<p>这是数字钟、分频器、计数器的基础.</p>
+
+<h3>应用2: 同步计数器</h3>
+
+<p>多个 JK 触发器串联, 每级触发器输出连到下一级的时钟, 就能构成 N 位二进制计数器 (模 $2^N$).</p>
+
+<h3>应用3: 寄存器、移位寄存器</h3>
+
+<p>利用置 0/置 1/保持的功能, 实现数据存储和移位.</p>
+
+<hr>
+
+<h2>七、考试答题模板</h2>
+
+<blockquote>
+  <p><strong>答</strong>: JK 触发器有四种工作状态, 由控制输入 $J$、$K$ 决定:</p>
+  <ol>
+    <li><strong>保持态</strong> ($J=0, K=0$): $Q^{n+1} = Q^n$, 输出维持不变;</li>
+    <li><strong>置 0 态</strong> ($J=0, K=1$): $Q^{n+1} = 0$, 输出强制为 0;</li>
+    <li><strong>置 1 态</strong> ($J=1, K=0$): $Q^{n+1} = 1$, 输出强制为 1;</li>
+    <li><strong>翻转态</strong> ($J=1, K=1$): $Q^{n+1} = \overline{Q^n}$, 输出在每个时钟边沿翻转一次.</li>
+  </ol>
+  <p>特性方程为 $Q^{n+1} = J \cdot \overline{Q^n} + \overline{K} \cdot Q^n$.</p>
+  <p>输出仅在时钟 $CP$ 的有效边沿更新.</p>
+</blockquote>
+
+<hr>
+
+<h2>八、易错点 ⚠️</h2>
+
+<h3>错误1: 把 J=0, K=1 和 J=1, K=0 搞反</h3>
+
+<p>记住: <strong>K 像 "Kill"</strong> (杀 = 置 0), <strong>J 像 "Jump" up</strong> (跳起 = 置 1).</p>
+
+<p>或者: J 控制 "Jump 到 1", K 控制 "Kill 到 0".</p>
+
+<h3>错误2: 漏掉 CP 边沿要求</h3>
+
+<p>如果题目只给 J、K 不给 CP, 不能直接说输出多少 — 必须等 CP 边沿. 没边沿就是保持上一个状态.</p>
+
+<h3>错误3: 跟 RS 触发器混淆</h3>
+
+<p>RS: S=1, R=1 是<strong>非法态</strong> (禁止), R=1 是 Reset, S=1 是 Set.<br>
+JK: J=1, K=1 是<strong>翻转态</strong> (合法), K=1 是 "Kill"(置 0), J=1 是 "Jump"(置 1).</p>
+
+<p>JK 是 RS 的"升级版", 把非法态变成了有用的翻转态.</p>
+
+<hr>
+
+<h2>九、一句话总结</h2>
+
+<p><strong>JK 触发器</strong>: 两个输入决定四种状态(保持/置 0/置 1/翻转), 特性方程 $Q^{n+1} = J\overline{Q^n} + \overline{K}Q^n$. 全靠 CP 边沿驱动.</p>
+
+<p>最大亮点: $J=K=1$ 是翻转态 — 计数器的灵魂 😉</p>
+</body>
+</html>
