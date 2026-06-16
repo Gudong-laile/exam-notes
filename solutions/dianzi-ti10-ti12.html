@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数电 题10 + 题12 合解</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    })"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    table, th, td { border: 1px solid #ddd; }
+    th, td { padding: 8px; text-align: center; }
+    th { background-color: #f9f9f9; }
+    ul { padding-left: 1.5em; }
+    li { margin: 0.5em 0; }
+  </style>
+</head>
+<body>
+<h1>数电 题10 + 题12 合解</h1>
+
+<h2>题10</h2>
+
+<h3>题目描述</h3>
+
+<p>某产品有 A、B、C 三项质量指标,其中 A 为主要指标,B、C 为次要指标,产品检验标准规定:当主要指标 A 和至少一项次要指标都合格时,产品才定为合格品。试画出能检验出合格品的逻辑电路。</p>
+
+<h3>解答</h3>
+
+<p>设 A、B、C 为输入变量,取值 1 表示该指标合格,0 表示不合格。设 F 为输出,F=1 表示产品合格。</p>
+
+<h4>第一步:列真值表</h4>
+
+<p>"A 合格"且"B、C 中至少一项合格"才算合格品。</p>
+
+<table>
+<tr><th>A</th><th>B</th><th>C</th><th>F</th></tr>
+<tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+</table>
+
+<h4>第二步:写逻辑表达式</h4>
+
+<p>由真值表可直接看出:只要 A=1,且 B、C 至少一个为 1,F 就是 1。即</p>
+
+<p>F = A·(B+C)</p>
+
+<p>(可用真值表逐项验证,也可直接由题意写出,无需化简,本身已是最简形式。)</p>
+
+<h4>第三步:转换为与非门实现</h4>
+
+<p>数字电路常要求全部用与非门(NAND)实现。利用两次取反不变(摩根定律):</p>
+
+<p>F = A·(B+C) = \overline{\overline{A·(B+C)}}</p>
+
+<p>把 (B+C) 也用与非门表示:利用 B+C = \overline{\overline{B}·\overline{C}},先用两个非门(可用与非门的两输入接同一信号实现,即 \overline{B} = \overline{B·B})得到 \overline{B}、\overline{C},再用一个与非门求 \overline{\overline{B}·\overline{C}} = B+C。</p>
+
+<p>具体级联(全部用与非门,标号 G1~G4):</p>
+
+<ul>
+<li>G1:输入 B、B → 输出 \overline{B}</li>
+<li>G2:输入 C、C → 输出 \overline{C}</li>
+<li>G3:输入 \overline{B}、\overline{C} → 输出 \overline{\overline{B}·\overline{C}} = B+C</li>
+<li>G4:输入 A、(B+C) 这两路 → 先把 G3 输出取反送入与非门,即 G4 输入为 A 与 \overline{B+C} ...</li>
+</ul>
+
+<p>注意这里不能直接套,需要重新理顺:与非门只能算"先与再非"。要得到 F = A·(B+C),做法是:</p>
+
+<ol>
+<li>用 G3(与非门,B、C 取反后相与再取反,即上面三步)先算出 S = B+C。</li>
+<li>再用一个与非门,输入 A 和 S,输出 \overline{A·S}。</li>
+<li>最后再用一个非门(与非门两输入接同一信号)对 \overline{A·S} 取反,得到 F = A·S = A·(B+C)。</li>
+</ol>
+
+<h4>电路连接顺序(共 5 个与非门)</h4>
+
+<pre><code>B ──┬──[NAND]── B̄ ──┐
+    └──┘            │
+                    [NAND]── (B+C) ──┐
+C ──┬──[NAND]── C̄ ──┘                │
+    └──┘                            │
+                                    [NAND]── A·(B+C)的反 ──[NAND]── F
+A ──────────────────────────────────┘         (两输入接同一信号取反)</code></pre>
+
+<p>即:G1、G2 分别把 B、C 自身取反(两输入端接同一根线);G3 把 \overline{B}、\overline{C} 相与再取反得到 B+C;G4 把 A 与 G3 的输出相与再取反;G5 把 G4 的输出自身取反(两输入端接同一根线),最终输出 F。</p>
+
+<h4>答案</h4>
+
+<p>$$\boxed{F = A\cdot(B+C)}$$</p>
+
+<p>用 5 个二输入与非门级联实现(取反—或—与三层,每层用与非门加非门复合而成)。</p>
+
+<h4>易错点</h4>
+
+<ul>
+<li>不要把"至少一项次要指标合格"误理解为"B 和 C 都合格"(那是与,不是或)。题目说的是"至少一项",对应 B+C,不是 B·C。</li>
+<li>全用与非门实现时,容易漏掉最外层的非门:G4 算出的是 \overline{A·(B+C)},必须再加一级取反才是 F 本身,不能直接把 G4 输出当作答案。</li>
+<li>用与非门实现"非"运算时,记得两个输入端接同一信号,即 \overline{X} = \overline{X\cdot X},不要漏画或漏接其中一个输入。</li>
+</ul>
+
+<hr>
+
+<h2>题12</h2>
+
+<h3>题目描述</h3>
+
+<p>某羽毛球考试有三名裁判 A、B、C,其中 A 为主裁判,B 和 C 为副裁判。规则:只要主裁判 A 认为合格,考试就通过;若 A 认为不合格,则需要 B 和 C 均认为合格才能通过。试用与非门设计逻辑电路实现该功能。</p>
+
+<h3>解答</h3>
+
+<p>设 A、B、C 为输入,取值 1 表示该裁判认为合格,0 表示不合格;F 为输出,F=1 表示考试通过。</p>
+
+<h4>第一步:按题意列逻辑表达式</h4>
+
+<p>题目分两种情况:</p>
+<ul>
+<li>A=1(主裁认为合格):直接通过,与 B、C 无关。</li>
+<li>A=0(主裁认为不合格):必须 B 和 C 都合格(B·C=1)才能通过。</li>
+</ul>
+
+<p>写成表达式:</p>
+
+<p>F = A + \overline{A}\cdot B\cdot C</p>
+
+<h4>第二步:化简</h4>
+
+<p>利用吸收律 X + \overline{X}Y = X + Y:</p>
+
+<p>F = A + \overline{A}\cdot B\cdot C = A + B\cdot C</p>
+
+<p>验证真值表(部分关键行):</p>
+
+<table>
+<tr><th>A</th><th>B</th><th>C</th><th>F=A+BC</th></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+<tr><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+</table>
+
+<p>与题意一致:A=1 时无论 B、C 都通过;A=0 时只有 B、C 都为 1 才通过。</p>
+
+<h4>第三步:转换为与非门实现</h4>
+
+<p>F = A + B·C,先把 B·C 用与非门求两次反得到:</p>
+
+<ul>
+<li>G1(与非门):输入 B、C → 输出 \overline{B\cdot C}</li>
+<li>G2(非门,与非门两输入接同一信号):输入 \overline{B\cdot C} → 输出 B·C</li>
+</ul>
+
+<p>再用摩根定律把 "或" 转成与非门形式:</p>
+
+<p>A + B·C = \overline{\overline{A}\cdot\overline{B\cdot C}}</p>
+
+<p>所以不需要单独再求一次 B·C 再取反,可以直接利用 G1 的输出 \overline{B\cdot C}:</p>
+
+<p>F = \overline{\overline{A}\cdot\overline{B\cdot C}}</p>
+
+<p>只需再求 \overline{A}(一个非门,与非门两输入接 A),然后将 \overline{A} 与 G1 输出 \overline{B\cdot C} 送入第三个与非门,直接输出就是 F,无需再加末级非门。</p>
+
+<h4>电路连接(共 3 个与非门)</h4>
+
+<pre><code>B ──┐
+    [NAND] G1 ── (BC的反,即 B̄+C̄) ──┐
+C ──┘                              │
+                                   [NAND] G3 ── F
+A ──┬──[NAND] G2 (两输入接A) ── Ā ──┘
+    └──┘</code></pre>
+
+<ul>
+<li>G1:输入 B、C,输出 \overline{B\cdot C}</li>
+<li>G2:输入 A、A(同一信号),输出 \overline{A}</li>
+<li>G3:输入 G2 的输出 \overline{A} 与 G1 的输出 \overline{B\cdot C},输出 \overline{\overline{A}\cdot\overline{BC}} = A + BC = F</li>
+</ul>
+
+<h4>答案</h4>
+
+<p>$$\boxed{F = A + B\cdot C}$$</p>
+
+<p>用 3 个二输入与非门实现:G1 求 \overline{BC},G2 求 \overline{A},G3 把两者相与再取反即为 F。</p>
+
+<h4>易错点</h4>
+
+<ul>
+<li>题目原始表达式是 F = A + \overline{A}BC,很多人直接拿这个式子去设计电路,门的数量会变多(多一个 \overline{A} 与 BC 的与门)。一定要先用吸收律化简成 F = A + BC,再设计,门更少更标准。</li>
+<li>不要把"A 不合格则需要 B 和 C 均合格"看成"或"(B+C),题目明确写的是"均认为合格",即 B·C(与),不是或。这点容易跟题10的"至少一项"搞混 —— 两题表面相似但一个是"或"一个是"与",审题时要逐字确认。</li>
+<li>化简最后一步从"与非-与非"结构看,F 的取值只需 3 个与非门,不需要再加末级非门,因为 \overline{\overline{A}\cdot\overline{BC}} 本身展开后已经等于 A+BC,不要画多余的第四个门。</li>
+</ul>
+</body>
+</html>
