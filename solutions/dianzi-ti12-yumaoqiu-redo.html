@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>题12 羽毛球三裁判逻辑电路 (重做)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    })"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    table, th, td { border: 1px solid #ddd; }
+    th, td { padding: 8px; text-align: center; }
+    th { background-color: #f4f4f4; }
+  </style>
+</head>
+<body>
+<h1>题12 羽毛球三裁判逻辑电路 (重做)</h1>
+
+<h2>题目原文</h2>
+<p>某羽毛球考试有三名裁判 A, B, C, 其中 A 为主裁判, B 和 C 为副裁判。<br>规则: 只要主裁判 A 认为合格, 考试就通过; 若 A 认为不合格, 则需要 B 和 C 均认为合格才能通过。<br>试用与非门设计逻辑电路实现该功能。</p>
+
+<h2>错在哪里</h2>
+<p>之前把题12的逻辑套成了题10的"A AND (B OR C)"(A必须合格,且B、C至少一个合格才通过)。</p>
+<p>但题12原文说的是"只要A认为合格就通过"——A单独一票就能让考试通过,不需要B、C配合。只有A不合格时,才需要B和C都合格来兜底。这是"A OR (B AND C)",不是"A AND (B OR C)"。</p>
+<p>具体出错的点: 真值表里 A=1, B=0, C=0 (即 100 这一行) 被标成了 Y=0。但按规则,A=1 (主裁合格) 时考试就该通过,跟B、C无关,所以这一行应该是 Y=1。这一处错误说明当时把"A必须合格"误解成了"A是必要条件之一",而题12里A实际是"足够条件"——A合格就够了。</p>
+
+<h2>正确解法</h2>
+
+<h3>Step1: 列真值表</h3>
+<table>
+  <tr>
+    <th>A</th>
+    <th>B</th>
+    <th>C</th>
+    <th>Y</th>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>1</td>
+    <td>1</td>
+    <td><strong>1</strong></td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><strong>1</strong></td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td><strong>1</strong></td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td><strong>1</strong></td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>1</td>
+    <td>1</td>
+    <td><strong>1</strong></td>
+  </tr>
+</table>
+<p>Y=1 的五行: 011, 100, 101, 110, 111。<br>逻辑核对: A=1的四行(100/101/110/111)全部通过,符合"A合格就通过";A=0时只有B=C=1(011)才通过,符合"A不合格则需B、C都合格"。</p>
+
+<h3>Step2: 卡诺图分析</h3>
+<p>卡诺图(行为AB, 列为C):</p>
+<table>
+  <tr>
+    <th>AB \ C</th>
+    <th>0</th>
+    <th>1</th>
+  </tr>
+  <tr>
+    <th>00</th>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <th>01</th>
+    <td>0</td>
+    <td><strong>1</strong></td>
+  </tr>
+  <tr>
+    <th>11</th>
+    <td><strong>1</strong></td>
+    <td><strong>1</strong></td>
+  </tr>
+  <tr>
+    <th>10</th>
+    <td><strong>1</strong></td>
+    <td><strong>1</strong></td>
+  </tr>
+</table>
+<p>圈法:</p>
+<ul>
+  <li>AB=10 整行(覆盖100, 101) 与 AB=11 整行(覆盖110, 111) 上下相邻,合并成一个4格大组 —— 这4格里A始终为1,B、C任意,化简为 <strong>A</strong>。</li>
+  <li>剩下 AB=01,C=1 这一格(即011),与 AB=11,C=1 这一格(即111)左右相邻,合并成一个2格组 —— 这2格里B=1,C=1恒定,A任意,化简为 <strong>BC</strong>。</li>
+</ul>
+<p>两组覆盖了全部5个1,无遗漏。</p>
+
+<h3>Step3: 表达式</h3>
+<p>$$Y = A + BC$$</p>
+
+<h3>Step4: 与非门转换</h3>
+<p>只用与非门(NAND),需要两次取反消去或运算的"或"形式:</p>
+<p>$$Y = A + BC = \overline{\overline{A+BC}} = \overline{\overline{A}\cdot\overline{BC}}$$</p>
+<p>用与非门实现两个反变量和外层结构:</p>
+<ul>
+  <li>$\overline{A} = A \uparrow A$ (一个二输入NAND的两端都接A,即反相器)</li>
+  <li>$\overline{BC} = B \uparrow C$ (B、C直接接一个NAND,其输出本身就是 $\overline{BC}$)</li>
+  <li>把上面两个结果送入第三个NAND: $Y = (A \uparrow A) \uparrow (B \uparrow C)$</li>
+</ul>
+<p>验证: 第三个NAND输出 $= \overline{\overline{A}\cdot\overline{BC}} = A + BC$,与目标一致。</p>
+<p>共需 <strong>3个二输入NAND门</strong>。</p>
+
+<h3>Step5: 电路图</h3>
+<pre>
+        ┌─────┐
+   A ───┤     │
+        │NAND1├──── A‾  (即 NOT A)
+   A ───┤     │           │
+        └─────┘           │
+                           ▼
+                       ┌─────┐
+                       │     │
+                       │NAND3├──── Y = A + BC
+                       │     │
+                       └─────┘
+                           ▲
+                           │
+        ┌─────┐           │
+   B ───┤     │           │
+        │NAND2├──── (BC)‾─┘  (即 NOT(B·C))
+   C ───┤     │
+        └─────┘
+</pre>
+<p>NAND1: 两输入端都接A → 输出 $\overline{A}$<br>NAND2: 输入B、C → 输出 $\overline{BC}$<br>NAND3: 输入接NAND1输出和NAND2输出 → 输出 $\overline{\overline{A}\cdot\overline{BC}} = A+BC = Y$</p>
+
+<h2>易错点</h2>
+<ol>
+  <li><strong>题10 vs 题12 逻辑别混</strong>: 题10是"A AND (B OR C)"——A是必要条件,必须A合格且B、C至少一个合格才通过。题12是"A OR (B AND C)"——A是充分条件,A合格就直接通过,不需要B、C。两题结构刚好对称(AND↔OR互换),做的时候容易记串,审题时把"只要A...就..."(充分)和"若A不...则需要..."(兜底条件)分开看。</li>
+  <li><strong>真值表逐行核对题意</strong>, 别凭直觉填: 看到A=1就该先问"这一行按题意Y该是多少",再填,不要先套用别的题的公式结构。</li>
+  <li><strong>卡诺图画法上A=1是两行(10和11), 别只圈一行</strong>: AB=10和AB=11合并才是完整的A变量大组(4格),只圈一行会漏掉应该简化掉的B或C,导致表达式变复杂、与非门数量算错。</li>
+</ol>
+
+<h2>一句话总结</h2>
+<p>题12是"主裁A说合格就通过, A说不合格则B和C都合格才行", 化简为 Y=A+BC, 用3个与非门实现: $Y=(A\uparrow A)\uparrow(B\uparrow C)$, 千万别跟题10的"A AND (B OR C)"搞混。</p>
+
+</body>
+</html>
