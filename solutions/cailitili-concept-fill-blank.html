@@ -96,11 +96,14 @@
   <li>对应力集中敏感: <strong>脆性</strong>材料 (塑性材料因为有屈服段, 应力集中处会先屈服, 反而不敏感)</li>
 </ul>
 
-<h3>2-25 铆接头剪切+挤压</h3>
+<h3>2-25 三板双剪铆接</h3>
+<p>这道题图示是 <strong>三板双剪</strong> (中间一块板, 上下各一块, 铆钉穿过):</p>
 <ul>
-  <li>切应力: $\tau = \dfrac{4F}{\pi d^2}$ (剪力 F 除以剪切面积 $\pi d^2 / 4$)</li>
-  <li>挤压应力: $\sigma_{bs} = \dfrac{F}{\delta d}$ (F 除以挤压面积 $\delta \cdot d$)</li>
+<li>切应力 (双剪, 每个剪切面承担 F/2): $\tau = \dfrac{2F}{\pi d^2}$</li>
+<li>中板挤压应力 (承担全部 F): $\sigma_{bs} = \dfrac{F}{\delta d}$ (最大)</li>
+<li>外板挤压应力 (各承担 F/2): $\sigma_{bs} = \dfrac{F}{2\delta d}$</li>
 </ul>
+<p>详细推导见 <a href="cailitili-2-25-and-5-13.html">材力 2-25 + 5-13 补充</a></p>
 
 <hr>
 
@@ -164,18 +167,19 @@ $$I_{p,\text{空}} = \frac{\pi (D^4 - d^4)}{32}, \quad I_{p,\text{实}} = \frac{
 <h3>5-7 (第二个) 铰支座 A 处边界条件</h3>
 <p><strong>挠度为零</strong>, 即 $y_A = 0$ (或写 $w_A = 0$)</p>
 
-<h3>5-13 边界条件和连续条件</h3>
-
-<p><strong>边界条件:</strong></p>
+<h3>5-13 连续梁边界条件 + 连续条件 (修订)</h3>
+<p>图示是 O 端铰支座 + B 处铰支座 + C 端固定端的连续梁, OC 段有均布载荷 q. 这是 1 度静不定结构.</p>
+<p><strong>边界条件 (4 条):</strong></p>
 <ul>
-  <li>O 处 (滚动铰支座, $x=0$): $y_O = 0$</li>
-  <li>C 处 (固定端, $x = a+l$): $y_C = 0$, $\theta_C = y'_C = 0$</li>
+<li>O 处 (x=0): $y(0) = 0$</li>
+<li>B 处 (x=a): $y(a) = 0$</li>
+<li>C 处 (x=a+l): $y(a+l) = 0$ 和 $y'(a+l) = 0$</li>
 </ul>
-
-<p><strong>连续条件:</strong></p>
+<p><strong>连续条件 (1 条):</strong></p>
 <ul>
-  <li>B 处 ($x = a$): $y_B^- = y_B^+$ (挠度连续), $\theta_B^- = \theta_B^+$ (转角连续)</li>
+<li>B 处转角连续: $y'(a^-) = y'(a^+)$ (挠度连续已被 $y(a)=0$ 覆盖)</li>
 </ul>
+<p>详细推导见 <a href="cailitili-2-25-and-5-13.html">材力 2-25 + 5-13 补充</a></p>
 
 <hr>
 

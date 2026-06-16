@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>材力 2-25 双剪铆接 + 5-13 连续梁边界条件</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    })"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5em 1em; text-align: left; }
+    th { background: #f0f0f0; }
+    blockquote { border-left: 4px solid #ccc; margin: 1em 0; padding: 0.5em 1em; color: #555; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 2em 0; }
+  </style>
+</head>
+<body>
+<h1>题 2-25 双剪铆接 + 题 5-13 连续梁边界条件</h1>
+
+<blockquote>
+  <p>2026-06-16 补充: 之前的 41 题答案里这两道靠默认结构猜测, 看到图后修正</p>
+</blockquote>
+
+<hr>
+
+<h2>题 2-25: 三板双剪铆接</h2>
+
+<h3>图示分析</h3>
+
+<pre><code>         ┌─────────────┐
+         │   上板  δ   │── F/2 →
+         └─────────────┘
+         ╔═══════════╗      ← 铆钉, 直径 d
+  ← F ──│   中板  δ   │     (穿过三块板)
+         ╚═══════════╝
+         ┌─────────────┐
+         │   下板  δ   │── F/2 →
+         └─────────────┘
+</code></pre>
+
+<p>中板向左拉 F, 上下两板各向右拉 F/2, 力系平衡.</p>
+
+<h3>剪切应力 τ — 双剪</h3>
+
+<p>铆钉有<strong>两个剪切面</strong> (上板/中板之间一个, 中板/下板之间一个), 每个剪切面承担 F/2:</p>
+
+$$\tau = \frac{F/2}{A_{\text{剪}}} = \frac{F/2}{\dfrac{\pi d^2}{4}} = \boxed{\frac{2F}{\pi d^2}}$$
+
+<p>⚠️ <strong>跟单剪的区别</strong>: 单剪是 $\tau = \dfrac{4F}{\pi d^2}$, 双剪只有一半. 因为同样的 F 由两个剪切面分担.</p>
+
+<h3>挤压应力 σ_bs</h3>
+
+<p><strong>中板</strong> (承担全部 F):</p>
+
+$$\sigma_{bs,\text{中}} = \frac{F}{A_{\text{挤}}} = \boxed{\frac{F}{\delta d}}$$
+
+<p><strong>上板/下板</strong> (各承担 F/2):</p>
+
+$$\sigma_{bs,\text{外}} = \frac{F/2}{\delta d} = \frac{F}{2\delta d}$$
+
+<p><strong>最大挤压应力在中板</strong>: $\sigma_{bs,\max} = \dfrac{F}{\delta d}$</p>
+
+<h3>易错点提醒 ⚠️</h3>
+
+<ol>
+  <li><strong>判断剪切面数量靠图</strong>: 两块板 = 单剪, 三块板 = 双剪 (中间穿一个铆钉)</li>
+  <li><strong>挤压面积是投影面积</strong>: $\delta \cdot d$ (板厚乘以铆钉直径), 不是 $\pi d^2/4$</li>
+  <li><strong>挤压应力比较</strong>: 算中板和外板两个值, 取大的作为校核依据</li>
+  <li><strong>力分配要看图</strong>: 这道题外板各承担 F/2 是题目隐含的对称, 不是所有双剪都这样</li>
+</ol>
+
+<hr>
+
+<h2>题 5-13: 连续梁边界条件 + 连续条件</h2>
+
+<h3>图示分析</h3>
+
+<pre><code>         q (均布载荷, 向下)
+   ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+y  ┌─────────────────────┐
+   │                      │  C (固定端)
+○──┴────────○─────────────┤
+O           B              ┊
+↑           ↑              ┊
+铰支座      铰支座         ┊
+   |←  a   →|←─── l ─────→|
+                                → x
+</code></pre>
+
+<ul>
+  <li><strong>O</strong> ($x = 0$): 滚动铰支座</li>
+  <li><strong>B</strong> ($x = a$): 滚动铰支座</li>
+  <li><strong>C</strong> ($x = a+l$): 固定端</li>
+  <li>均布载荷 $q$ 作用在整个 OC 段</li>
+  <li>这是 <strong>1 度静不定连续梁</strong></li>
+</ul>
+
+<h3>边界条件 (3 处, 共 4 个方程)</h3>
+
+<table>
+  <thead>
+    <tr><th>位置</th><th>约束类型</th><th>条件</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>O ($x=0$)</td><td>滚动铰支座</td><td>$y(0) = 0$</td></tr>
+    <tr><td>B ($x=a$)</td><td>滚动铰支座</td><td>$y(a) = 0$</td></tr>
+    <tr><td>C ($x=a+l$)</td><td>固定端</td><td>$y(a+l) = 0$, $y'(a+l) = 0$</td></tr>
+  </tbody>
+</table>
+
+<h3>连续条件 (在 B 处分段, 2 个方程)</h3>
+
+<p>由于 B 处是支座 + 分段点, 两侧位移必须连续:</p>
+
+<table>
+  <thead>
+    <tr><th>条件</th><th>方程</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>挠度连续</td><td>$y(a^-) = y(a^+)$ (其实因 $y(a)=0$ 已自动满足)</td></tr>
+    <tr><td>转角连续</td><td>$y'(a^-) = y'(a^+)$</td></tr>
+  </tbody>
+</table>
+
+<h3>整理答案 (填到题目空白里)</h3>
+
+<blockquote>
+  <p><strong>边界条件</strong>: $y(0) = 0$、$y(a) = 0$、$y(a+l) = 0$、$y'(a+l) = 0$;</p>
+  <p><strong>连续条件</strong>: $y'(a^-) = y'(a^+)$ (B 处转角连续)</p>
+</blockquote>
+
+<h3>为什么挠度连续条件被"吃掉"了?</h3>
+
+<p>因为 B 是支座, 两边的挠度都必须等于零 ($y(a^-) = y(a^+) = 0$). 所以<strong>挠度连续条件已经被 "$y(a) = 0$" 这个边界条件覆盖</strong>, 不需要额外写.</p>
+
+<p>只需要写<strong>转角连续条件</strong> $y'(a^-) = y'(a^+)$, 因为 B 是铰支座 (允许两侧自由转动), 但分段函数的两侧转角必须在 B 处对接, 这是数学上的连续要求.</p>
+
+<h3>求解时的总未知数</h3>
+
+<ul>
+  <li>2 段梁, 每段 2 个积分常数 → 4 个 $C_i$</li>
+  <li>1 个多余约束力 (静不定 1 度) → 1 个未知</li>
+  <li><strong>总共 5 个未知</strong></li>
+</ul>
+
+<ul>
+  <li>4 个边界条件 + 1 个连续条件 → 5 个方程</li>
+</ul>
+
+<p>5 = 5, 刚好够解 ✅</p>
+
+<h3>易错点提醒 ⚠️</h3>
+
+<ol>
+  <li><strong>不要漏 B 处的边界条件 $y(a)=0$</strong> — 中间支座的挠度为零这件事容易忘</li>
+  <li><strong>连续条件只需写转角</strong> — 挠度连续被边界条件覆盖了</li>
+  <li><strong>如果 B 是内部铰</strong> (不是支座, 只是中间铰链): 那连续条件变成 $y(a^-)=y(a^+)$ + 弯矩为零 $M(a)=0$, 不是这道题的情况</li>
+  <li><strong>C 是固定端要写两条</strong>: 挠度和转角都为零</li>
+</ol>
+
+<hr>
+
+<h2>一句话总结</h2>
+
+<ul>
+  <li><strong>2-25</strong>: 三板双剪, $\tau = \dfrac{2F}{\pi d^2}$ (比单剪小一半), $\sigma_{bs,\max} = \dfrac{F}{\delta d}$ (中板)</li>
+  <li><strong>5-13</strong>: 4 条边界 ($y_O=y_B=y_C=0$, $y'_C=0$) + 1 条连续 ($y'$ 在 B 处连续)</li>
+</ul>
+</body>
+</html>
