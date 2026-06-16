@@ -85,91 +85,92 @@ $$\sigma_{bs,\text{外}} = \frac{F/2}{\delta d} = \frac{F}{2\delta d}$$
 
 <hr>
 
-<h2>题 5-13: 连续梁边界条件 + 连续条件</h2>
+<h2>题 5-13: 内部铰梁的边界 + 连续条件</h2>
 
 <h3>图示分析</h3>
 
-<pre><code>         q (均布载荷, 向下)
-   ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-y  ┌─────────────────────┐
-   │                      │  C (固定端)
-○──┴────────○─────────────┤
-O           B              ┊
-↑           ↑              ┊
-铰支座      铰支座         ┊
-   |←  a   →|←─── l ─────→|
-                                → x
-</code></pre>
+<p>B 处的小圆圈 (在梁上方, 不带支座符号) 是<strong>内部铰链</strong> (中间铰), <strong>不是滚动铰支座</strong>! 这是个常见的图示陷阱.</p>
 
 <ul>
   <li><strong>O</strong> ($x = 0$): 滚动铰支座</li>
-  <li><strong>B</strong> ($x = a$): 滚动铰支座</li>
+  <li><strong>B</strong> ($x = a$): <strong>内部铰链</strong> — 梁在此处由无摩擦销钉连接, 可独立转动</li>
   <li><strong>C</strong> ($x = a+l$): 固定端</li>
-  <li>均布载荷 $q$ 作用在整个 OC 段</li>
-  <li>这是 <strong>1 度静不定连续梁</strong></li>
+  <li>OC 段上有均布载荷 $q$</li>
 </ul>
 
-<h3>边界条件 (3 处, 共 4 个方程)</h3>
+<h3>静定性判断</h3>
 
 <table>
   <thead>
-    <tr><th>位置</th><th>约束类型</th><th>条件</th></tr>
+    <tr><th>约束</th><th>反力数</th></tr>
   </thead>
   <tbody>
-    <tr><td>O ($x=0$)</td><td>滚动铰支座</td><td>$y(0) = 0$</td></tr>
-    <tr><td>B ($x=a$)</td><td>滚动铰支座</td><td>$y(a) = 0$</td></tr>
-    <tr><td>C ($x=a+l$)</td><td>固定端</td><td>$y(a+l) = 0$, $y'(a+l) = 0$</td></tr>
+    <tr><td>O 滚动铰支座</td><td>1</td></tr>
+    <tr><td>C 固定端</td><td>3</td></tr>
+    <tr><td>总反力</td><td><strong>4</strong></td></tr>
   </tbody>
 </table>
-
-<h3>连续条件 (在 B 处分段, 2 个方程)</h3>
-
-<p>由于 B 处是支座 + 分段点, 两侧位移必须连续:</p>
 
 <table>
   <thead>
-    <tr><th>条件</th><th>方程</th></tr>
+    <tr><th>方程</th><th>方程数</th></tr>
   </thead>
   <tbody>
-    <tr><td>挠度连续</td><td>$y(a^-) = y(a^+)$ (其实因 $y(a)=0$ 已自动满足)</td></tr>
-    <tr><td>转角连续</td><td>$y'(a^-) = y'(a^+)$</td></tr>
+    <tr><td>静力平衡</td><td>3</td></tr>
+    <tr><td>内部铰提供 M(B)=0</td><td>1</td></tr>
+    <tr><td>总方程</td><td><strong>4</strong></td></tr>
   </tbody>
 </table>
 
-<h3>整理答案 (填到题目空白里)</h3>
+<p>4 = 4, <strong>静定结构</strong> ✓</p>
 
-<blockquote>
-  <p><strong>边界条件</strong>: $y(0) = 0$、$y(a) = 0$、$y(a+l) = 0$、$y'(a+l) = 0$;</p>
-  <p><strong>连续条件</strong>: $y'(a^-) = y'(a^+)$ (B 处转角连续)</p>
-</blockquote>
+<h3>边界条件 (3 条)</h3>
 
-<h3>为什么挠度连续条件被"吃掉"了?</h3>
+<table>
+  <thead>
+    <tr><th>位置</th><th>条件</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>O ($x = 0$)</td><td>$y(0) = 0$</td></tr>
+    <tr><td>C ($x = a+l$)</td><td>$y(a+l) = 0$</td></tr>
+    <tr><td>C ($x = a+l$)</td><td>$y'(a+l) = 0$</td></tr>
+  </tbody>
+</table>
 
-<p>因为 B 是支座, 两边的挠度都必须等于零 ($y(a^-) = y(a^+) = 0$). 所以<strong>挠度连续条件已经被 "$y(a) = 0$" 这个边界条件覆盖</strong>, 不需要额外写.</p>
+<h3>连续条件 (B 处, 1 条)</h3>
 
-<p>只需要写<strong>转角连续条件</strong> $y'(a^-) = y'(a^+)$, 因为 B 是铰支座 (允许两侧自由转动), 但分段函数的两侧转角必须在 B 处对接, 这是数学上的连续要求.</p>
+<p>只有<strong>挠度连续</strong>:</p>
 
-<h3>求解时的总未知数</h3>
+$$y(a^-) = y(a^+)$$
+
+<p>⚠️ <strong>转角不连续</strong>: 内部铰允许两侧梁独立转动, 所以 $y'(a^-) \neq y'(a^+)$ — 这是内部铰跟支座最大的区别.</p>
+
+<h3>总未知数 vs 方程</h3>
 
 <ul>
   <li>2 段梁, 每段 2 个积分常数 → 4 个 $C_i$</li>
-  <li>1 个多余约束力 (静不定 1 度) → 1 个未知</li>
-  <li><strong>总共 5 个未知</strong></li>
+  <li>3 边界条件 + 1 连续条件 = <strong>4 个方程</strong> ✓</li>
 </ul>
 
-<ul>
-  <li>4 个边界条件 + 1 个连续条件 → 5 个方程</li>
-</ul>
+<h3>跟"中间支座"的对比</h3>
 
-<p>5 = 5, 刚好够解 ✅</p>
+<table>
+  <thead>
+    <tr><th>情况</th><th>边界</th><th>连续</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>B 是支座 (静不定)</td><td>$y(0)=y(a)=y(a+l)=0$, $y'(a+l)=0$</td><td>$y'(a^-)=y'(a^+)$</td></tr>
+    <tr><td><strong>B 是内部铰 (静定, 本题)</strong></td><td>$y(0)=y(a+l)=0$, $y'(a+l)=0$</td><td>$y(a^-)=y(a^+)$ (挠度连续, 转角不续)</td></tr>
+  </tbody>
+</table>
 
-<h3>易错点提醒 ⚠️</h3>
+<h3>易错点 ⚠️</h3>
 
 <ol>
-  <li><strong>不要漏 B 处的边界条件 $y(a)=0$</strong> — 中间支座的挠度为零这件事容易忘</li>
-  <li><strong>连续条件只需写转角</strong> — 挠度连续被边界条件覆盖了</li>
-  <li><strong>如果 B 是内部铰</strong> (不是支座, 只是中间铰链): 那连续条件变成 $y(a^-)=y(a^+)$ + 弯矩为零 $M(a)=0$, 不是这道题的情况</li>
-  <li><strong>C 是固定端要写两条</strong>: 挠度和转角都为零</li>
+  <li><strong>看清图</strong>: 圆圈在梁<strong>上方/中间</strong> = 内部铰; 圆圈带三角支撑/底座 = 滚动支座</li>
+  <li><strong>内部铰处不写 $y(a)=0$</strong>: 内部铰允许 y 在 B 处不等于零, 它只是中间铰链, 不是约束</li>
+  <li><strong>转角不连续不要写错</strong>: 内部铰处 $y'$ 不连续, 写连续等式就错了</li>
+  <li><strong>静定 vs 静不定</strong>: 内部铰使原本超约束的结构变成静定, 多个内部铰可以让多跨梁仍然静定</li>
 </ol>
 
 <hr>
@@ -178,7 +179,7 @@ O           B              ┊
 
 <ul>
   <li><strong>2-25</strong>: 三板双剪, $\tau = \dfrac{2F}{\pi d^2}$ (比单剪小一半), $\sigma_{bs,\max} = \dfrac{F}{\delta d}$ (中板)</li>
-  <li><strong>5-13</strong>: 4 条边界 ($y_O=y_B=y_C=0$, $y'_C=0$) + 1 条连续 ($y'$ 在 B 处连续)</li>
+  <li><strong>5-13</strong>: B 是内部铰 (静定); 3 条边界 ($y_O=y_C=0$, $y'_C=0$) + 1 条连续 (B 处挠度连续, 转角不连续)</li>
 </ul>
 </body>
 </html>

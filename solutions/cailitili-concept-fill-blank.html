@@ -167,17 +167,17 @@ $$I_{p,\text{空}} = \frac{\pi (D^4 - d^4)}{32}, \quad I_{p,\text{实}} = \frac{
 <h3>5-7 (第二个) 铰支座 A 处边界条件</h3>
 <p><strong>挠度为零</strong>, 即 $y_A = 0$ (或写 $w_A = 0$)</p>
 
-<h3>5-13 连续梁边界条件 + 连续条件 (修订)</h3>
-<p>图示是 O 端铰支座 + B 处铰支座 + C 端固定端的连续梁, OC 段有均布载荷 q. 这是 1 度静不定结构.</p>
-<p><strong>边界条件 (4 条):</strong></p>
+<h3>5-13 内部铰梁边界条件 (再次修订)</h3>
+<p>⚠️ B 处的小圆圈是<strong>内部铰链</strong>(中间铰), 不是滚动铰支座! 这使结构变成<strong>静定</strong>。</p>
+<p><strong>边界条件 (3 条):</strong></p>
 <ul>
 <li>O 处 (x=0): $y(0) = 0$</li>
-<li>B 处 (x=a): $y(a) = 0$</li>
 <li>C 处 (x=a+l): $y(a+l) = 0$ 和 $y'(a+l) = 0$</li>
 </ul>
-<p><strong>连续条件 (1 条):</strong></p>
+<p><strong>连续条件 (B 处, 1 条):</strong></p>
 <ul>
-<li>B 处转角连续: $y'(a^-) = y'(a^+)$ (挠度连续已被 $y(a)=0$ 覆盖)</li>
+<li>挠度连续: $y(a^-) = y(a^+)$</li>
+<li>⚠️ <strong>转角不连续</strong>: 内部铰允许两侧独立转动, 所以 $y'(a^-) \neq y'(a^+)$</li>
 </ul>
 <p>详细推导见 <a href="cailitili-2-25-and-5-13.html">材力 2-25 + 5-13 补充</a></p>
 
