@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>题11 JK 触发器画输出波形</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    })"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ddd; padding: 0.5em; text-align: left; }
+    th { background: #f9f9f9; font-weight: bold; }
+  </style>
+</head>
+<body>
+<h1>题11 JK 触发器画输出波形</h1>
+
+<h2>题目</h2>
+
+<p>电路为 JK 触发器(主从/边沿触发器,具体型号不影响分析方法):</p>
+
+<ul>
+<li>输入端:<code>S</code>(异步置位,接 1,即无效)、<code>1J</code>(即 J)、<code>CP</code>、<code>1K</code>(即 K)、<code>R</code>(异步复位,接 1,即无效)</li>
+<li>输出端:<code>Q</code>、<code>Q̄</code></li>
+<li><strong>CP 输入端画有小圆圈</strong> → 下降沿触发(每个 CP 脉冲的"下降沿"才是有效触发时刻)</li>
+<li>设初始状态 <strong>Q=0</strong></li>
+<li>给出 CP(1~6 共 6 个脉冲)、J、K 三路波形,要求画出 Q、Q̄ 波形</li>
+</ul>
+
+<p>由于 S=R=1(对这种异步置位/复位端通常低电平有效),所以 S、R 全程不起作用,触发器完全按 JK 同步输入工作。</p>
+
+<h2>解答</h2>
+
+<p><strong>第一步:确定触发时刻</strong></p>
+
+<p>CP 有圆圈 → 下降沿触发。6 个脉冲对应 6 个下降沿,逐个标记为 CP1↓ ~ CP6↓。</p>
+
+<p><strong>第二步:读取每个下降沿时刻的 J、K 电平</strong></p>
+
+<p>逐沿对照波形图读值:</p>
+
+<table>
+<thead>
+<tr>
+<th>触发沿</th>
+<th>J</th>
+<th>K</th>
+<th>JK 组合</th>
+<th>触发器动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CP1↓</td>
+<td>1</td>
+<td>1</td>
+<td>J=1,K=1</td>
+<td>翻转</td>
+</tr>
+<tr>
+<td>CP2↓</td>
+<td>0</td>
+<td>1</td>
+<td>J=0,K=1</td>
+<td>置 0</td>
+</tr>
+<tr>
+<td>CP3↓</td>
+<td>1</td>
+<td>0</td>
+<td>J=1,K=0</td>
+<td>置 1</td>
+</tr>
+<tr>
+<td>CP4↓</td>
+<td>0</td>
+<td>0</td>
+<td>J=0,K=0</td>
+<td>保持</td>
+</tr>
+<tr>
+<td>CP5↓</td>
+<td>1</td>
+<td>1</td>
+<td>J=1,K=1</td>
+<td>翻转</td>
+</tr>
+<tr>
+<td>CP6↓</td>
+<td>0</td>
+<td>0</td>
+<td>J=0,K=0</td>
+<td>保持</td>
+</tr>
+</tbody>
+</table>
+
+<p>这组 J、K 取值正好把 JK 真值表的 4 种状态(翻转、置0、置1、保持)都过了一遍,是很典型的考法,可以反过来验证读图没读错。</p>
+
+<p><strong>第三步:逐沿推 Q</strong></p>
+
+<p>初始 $Q_0 = 0$</p>
+
+<ul>
+<li>CP1↓:J=1,K=1 → 翻转,$Q_1 = \neg Q_0 = \mathbf{1}$</li>
+<li>CP2↓:J=0,K=1 → 置 0,$Q_2 = \mathbf{0}$</li>
+<li>CP3↓:J=1,K=0 → 置 1,$Q_3 = \mathbf{1}$</li>
+<li>CP4↓:J=0,K=0 → 保持,$Q_4 = Q_3 = \mathbf{1}$</li>
+<li>CP5↓:J=1,K=1 → 翻转,$Q_5 = \neg Q_4 = \mathbf{0}$</li>
+<li>CP6↓:J=0,K=0 → 保持,$Q_6 = Q_5 = \mathbf{0}$</li>
+</ul>
+
+<p><strong>Q 状态序列(每个 CP 高电平区间内的值,从初态算起):</strong></p>
+
+<p>0(初态) → 1 → 0 → 1 → 1 → 0 → 0</p>
+
+<p>注意:Q 在两个下降沿之间(也就是对应的 CP 高电平及随后的低电平期间)保持不变,只在下降沿那一瞬间根据 JK 跳变;Q̄ 始终是 Q 的反相,全程同步取反即可,不需要单独分析 JK。</p>
+
+<h2>输出波形</h2>
+
+<pre><code>CP   _┌─┐_┌─┐_┌─┐_┌─┐_┌─┐_┌─┐_____
+        ①    ②    ③    ④    ⑤    ⑥
+     (CP编号1~6,下降沿①~⑥为有效触发点)
+
+J    _┌───┐___┌───┐___┌───┐___
+K    ____┌───────┐_______┌───┐_
+
+       J=1   J=0   J=1   J=0   J=1   J=0
+       K=1   K=1   K=0   K=0   K=1   K=0
+       翻转   置0   置1   保持   翻转   保持
+
+Q(初态0):
+     0  │        1            0  │  1   1  │      0      0
+     ───┘                     ┌──┘  └──┐   └──────┐      └────
+                               │        │
+即:
+Q    0__┌────────┐____┌────────────────┐__________________
+                       (Q1=1)            (Q2=0,Q3=1,Q4=1)   (Q5=0,Q6=0)
+
+逐段电平(更直观的描述):
+  初态 ~CP1↓:        Q=0
+  CP1↓ ~CP2↓:        Q=1
+  CP2↓ ~CP3↓:        Q=0
+  CP3↓ ~CP4↓:        Q=1
+  CP4↓ ~CP5↓:        Q=1
+  CP5↓ ~CP6↓:        Q=0
+  CP6↓ 之后:          Q=0
+
+Q̄ (与 Q 始终反相):
+  初态 ~CP1↓:        Q̄=1
+  CP1↓ ~CP2↓:        Q̄=0
+  CP2↓ ~CP3↓:        Q̄=1
+  CP3↓ ~CP4↓:        Q̄=0
+  CP4↓ ~CP5↓:        Q̄=0
+  CP5↓ ~CP6↓:        Q̄=1
+  CP6↓ 之后:          Q̄=1
+</code></pre>
+
+<p>画图时:Q 的每一段电平要画到对应下降沿处才跳变(不是脉冲上升沿,也不是脉冲中间),Q̄ 整条曲线和 Q 完全对称(高变低、低变高)。</p>
+
+<h2>易错点</h2>
+
+<ol>
+<li><strong>触发时刻看错</strong>:CP 输入端有小圆圈代表下降沿触发,很多人习惯性当成上升沿触发去读 J、K,导致整组答案全错。看到圆圈先确认触发沿方向再读图。</li>
+<li><strong>J、K 取值时刻搞混</strong>:JK 触发器是"边沿决定动作",必须读<strong>触发沿那一瞬间</strong>(本题是每个 CP 脉冲下降的那一刻)J、K 的电平,而不是整个 CP 高电平期间或低电平期间的"大概值"——如果 J/K 在这一瞬间正好处于跳变沿上,要以电路图标注的边沿前一刻为准。</li>
+<li><strong>Q 波形跳变位置画错</strong>:Q 只能在触发沿(下降沿)处跳变,两次触发沿之间无论 J、K 怎么变都不影响 Q,新手常常把 Q 的跳变画到 J 或 K 变化的位置上,这是错的。</li>
+<li><strong>忘记 S、R 的作用</strong>:本题 S=R=1 全程无效,但如果哪天遇到 S 或 R 为低电平有效且被拉低的情况,要先处理异步置位/复位,它优先级高于 J、K,会强制把 Q 置 1 或置 0,而不受 CP、J、K 影响。</li>
+</ol>
+
+<h2>一句话总结</h2>
+
+<p>下降沿触发的 JK 触发器,只需在每个 CP 脉冲"往下掉"的那一瞬间读 J、K,按真值表(11翻转/01置0/10置1/00保持)逐沿更新 Q,Q̄ 全程与 Q 反相即可。</p>
+</body>
+</html>
